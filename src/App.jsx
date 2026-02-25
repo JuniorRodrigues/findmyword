@@ -1184,8 +1184,108 @@ const ConnectorsApp = () => {
     }
   };
 
-  // Categories View
-  const CategoriesView = () => (
+  // --- Shared sub-components (used by both mobile & desktop) ---
+
+  const CategoryCard = ({ category, isActive, onClick }) => (
+    <button
+      onClick={onClick}
+      className={`w-full rounded-xl shadow-sm hover:shadow-md transition-all p-5 text-left border active:scale-[0.98] ${
+        isActive
+          ? 'bg-blue-50 border-blue-300 ring-2 ring-blue-200'
+          : 'bg-white border-slate-200 hover:border-slate-300'
+      }`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className={`w-12 h-12 ${category.color} rounded-lg flex items-center justify-center text-2xl shadow-sm`}>
+            {category.icon}
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-slate-800">{category.name}</h2>
+            <p className="text-sm text-slate-500">{category.connectors.length} connectors</p>
+          </div>
+        </div>
+        <ChevronRight className="w-5 h-5 text-slate-400" />
+      </div>
+    </button>
+  );
+
+  const ConnectorCard = ({ connector, isActive, onClick }) => (
+    <button
+      onClick={onClick}
+      className={`w-full rounded-lg shadow-sm hover:shadow-md transition-all p-4 text-left border active:scale-[0.98] ${
+        isActive
+          ? 'bg-blue-50 border-blue-300 ring-2 ring-blue-200'
+          : 'bg-white border-slate-200 hover:border-slate-300'
+      }`}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-800 capitalize">{connector.word}</h3>
+          <p className="text-sm text-slate-500 mt-1 line-clamp-1">{connector.description}</p>
+        </div>
+        <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-2" />
+      </div>
+    </button>
+  );
+
+  const DetailContent = ({ connector, category, showBackButton, onBack }) => (
+    <div className="min-h-screen lg:min-h-0 bg-gradient-to-br from-slate-50 to-slate-100 lg:bg-transparent">
+      {showBackButton && (
+        <div className="sticky top-0 bg-white shadow-sm z-10 px-4 py-4 border-b border-slate-200 lg:hidden">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-blue-600 mb-3 active:opacity-70"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-medium">Back to list</span>
+          </button>
+          <h1 className="text-2xl font-bold text-slate-800 capitalize">{connector.word}</h1>
+          <div className="flex items-center gap-2 mt-2">
+            <div className={`${category.color} px-3 py-1 rounded-full text-white text-xs font-medium`}>
+              {category.name}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="hidden lg:block mb-6">
+        <h1 className="text-2xl font-bold text-slate-800 capitalize">{connector.word}</h1>
+        <div className="flex items-center gap-2 mt-2">
+          <div className={`${category.color} px-3 py-1 rounded-full text-white text-xs font-medium`}>
+            {category.name}
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4 lg:p-0 space-y-4 pb-8">
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+          <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">How to Use</h2>
+          <p className="text-slate-700 leading-relaxed">{connector.usage}</p>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+          <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Description</h2>
+          <p className="text-slate-700 leading-relaxed">{connector.description}</p>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+          <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-3">Examples</h2>
+          <div className="space-y-3">
+            {connector.examples.map((example, index) => (
+              <div key={index} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                <p className="text-slate-700 leading-relaxed italic">"{example}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // --- Mobile Views (hidden on lg+) ---
+
+  const MobileCategoriesView = () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="sticky top-0 bg-white shadow-sm z-10 px-4 py-6 border-b border-slate-200">
         <div className="flex items-center gap-3 mb-2">
@@ -1194,34 +1294,20 @@ const ConnectorsApp = () => {
         </div>
         <p className="text-sm text-slate-600">Select a category to explore connectors</p>
       </div>
-
       <div className="p-4 space-y-3 pb-8">
         {categories.map((category) => (
-          <button
+          <CategoryCard
             key={category.id}
+            category={category}
+            isActive={false}
             onClick={() => handleCategoryClick(category)}
-            className="w-full bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-5 text-left border border-slate-200 active:scale-98"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 ${category.color} rounded-lg flex items-center justify-center text-2xl shadow-sm`}>
-                  {category.icon}
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-slate-800">{category.name}</h2>
-                  <p className="text-sm text-slate-500">{category.connectors.length} connectors</p>
-                </div>
-              </div>
-              <ChevronRight className="w-5 h-5 text-slate-400" />
-            </div>
-          </button>
+          />
         ))}
       </div>
     </div>
   );
 
-  // List View
-  const ListView = () => (
+  const MobileListView = () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="sticky top-0 bg-white shadow-sm z-10 px-4 py-4 border-b border-slate-200">
         <button
@@ -1241,80 +1327,131 @@ const ConnectorsApp = () => {
           </div>
         </div>
       </div>
-
       <div className="p-4 space-y-2 pb-8">
         {selectedCategory.connectors.map((connector, index) => (
-          <button
+          <ConnectorCard
             key={index}
+            connector={connector}
+            isActive={false}
             onClick={() => handleConnectorClick(connector)}
-            className="w-full bg-white rounded-lg shadow-sm hover:shadow-md transition-all p-4 text-left border border-slate-200 active:scale-98"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-slate-800 capitalize">{connector.word}</h3>
-                <p className="text-sm text-slate-500 mt-1 line-clamp-1">{connector.description}</p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-2" />
-            </div>
-          </button>
+          />
         ))}
       </div>
     </div>
   );
 
-  // Detail View
-  const DetailView = () => (
+  const MobileDetailView = () => (
+    <DetailContent
+      connector={selectedConnector}
+      category={selectedCategory}
+      showBackButton={true}
+      onBack={handleBack}
+    />
+  );
+
+  // --- Desktop Layout (visible on lg+) ---
+
+  const DesktopLayout = () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="sticky top-0 bg-white shadow-sm z-10 px-4 py-4 border-b border-slate-200">
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-2 text-blue-600 mb-3 active:opacity-70"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="font-medium">Back to list</span>
-        </button>
-        <h1 className="text-2xl font-bold text-slate-800 capitalize">{selectedConnector.word}</h1>
-        <div className="flex items-center gap-2 mt-2">
-          <div className={`${selectedCategory.color} px-3 py-1 rounded-full text-white text-xs font-medium`}>
-            {selectedCategory.name}
-          </div>
+      {/* Top header */}
+      <div className="sticky top-0 bg-white shadow-sm z-10 px-8 py-5 border-b border-slate-200">
+        <div className="max-w-[1400px] mx-auto flex items-center gap-3">
+          <BookOpen className="w-8 h-8 text-blue-600" />
+          <h1 className="text-2xl font-bold text-slate-800">FindMyWord</h1>
+          <span className="text-sm text-slate-400 ml-2">— Enhance your flow</span>
         </div>
       </div>
 
-      <div className="p-4 space-y-4 pb-8">
-        {/* Usage */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
-          <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">How to Use</h2>
-          <p className="text-slate-700 leading-relaxed">{selectedConnector.usage}</p>
-        </div>
+      {/* 3-column body */}
+      <div className="max-w-[1400px] mx-auto flex gap-6 p-6" style={{ height: 'calc(100vh - 73px)' }}>
 
-        {/* Description */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
-          <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Description</h2>
-          <p className="text-slate-700 leading-relaxed">{selectedConnector.description}</p>
-        </div>
-
-        {/* Examples */}
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
-          <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-3">Examples</h2>
-          <div className="space-y-3">
-            {selectedConnector.examples.map((example, index) => (
-              <div key={index} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                <p className="text-slate-700 leading-relaxed italic">"{example}"</p>
-              </div>
+        {/* Column 1: Categories */}
+        <div className="w-[320px] flex-shrink-0 overflow-y-auto pr-2 custom-scrollbar">
+          <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">Categories</h2>
+          <div className="space-y-2">
+            {categories.map((category) => (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                isActive={selectedCategory?.id === category.id}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setSelectedConnector(null);
+                  setCurrentView('list');
+                }}
+              />
             ))}
           </div>
+        </div>
+
+        {/* Column 2: Connector list */}
+        <div className="w-[340px] flex-shrink-0 overflow-y-auto pr-2 custom-scrollbar">
+          {selectedCategory ? (
+            <>
+              <div className="flex items-center gap-3 mb-3 px-1">
+                <div className={`w-8 h-8 ${selectedCategory.color} rounded-md flex items-center justify-center text-lg shadow-sm`}>
+                  {selectedCategory.icon}
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-slate-700">{selectedCategory.name}</h2>
+                  <p className="text-xs text-slate-400">{selectedCategory.connectors.length} connectors</p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                {selectedCategory.connectors.map((connector, index) => (
+                  <ConnectorCard
+                    key={index}
+                    connector={connector}
+                    isActive={selectedConnector?.word === connector.word}
+                    onClick={() => {
+                      setSelectedConnector(connector);
+                      setCurrentView('detail');
+                    }}
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-full text-slate-400 text-sm">
+              <p>Pick a category to see connectors</p>
+            </div>
+          )}
+        </div>
+
+        {/* Column 3: Detail */}
+        <div className="flex-1 min-w-0 overflow-y-auto pr-2 custom-scrollbar bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          {selectedConnector ? (
+            <DetailContent
+              connector={selectedConnector}
+              category={selectedCategory}
+              showBackButton={false}
+              onBack={handleBack}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-slate-400 text-sm gap-2">
+              <BookOpen className="w-12 h-12 text-slate-300" />
+              <p>Select a connector to see details</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {currentView === 'categories' && <CategoriesView />}
-      {currentView === 'list' && <ListView />}
-      {currentView === 'detail' && <DetailView />}
-    </div>
+    <>
+      {/* Mobile layout */}
+      <div className="lg:hidden max-w-2xl mx-auto">
+        {currentView === 'categories' && <MobileCategoriesView />}
+        {currentView === 'list' && <MobileListView />}
+        {currentView === 'detail' && <MobileDetailView />}
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden lg:block">
+        <DesktopLayout />
+      </div>
+    </>
   );
 };
 
