@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { ArrowLeft, BookOpen, ChevronRight } from 'lucide-react';
 
-const ConnectorsApp = () => {
+const FindMyWordApp = () => {
   const [currentView, setCurrentView] = useState('categories'); // 'categories', 'list', 'detail'
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedConnector, setSelectedConnector] = useState(null);
+  const [selectedExpression, setSelectedExpression] = useState(null);
 
-  const connectorsData = {
+  const expressionsData = {
     start_speaking: {
       name: 'Start speaking',
       icon: '🎤',
       color: 'bg-slate-500',
-      connectors: [
+      expressions: [
         {
           word: 'well',
           usage: 'Use at the beginning to start speaking naturally or gain time.',
@@ -127,7 +127,7 @@ const ConnectorsApp = () => {
       name: 'Connect ideas',
       icon: '🔗',
       color: 'bg-blue-500',
-      connectors: [
+      expressions: [
         {
           word: 'and',
           usage: 'Use to add information or continue an idea.',
@@ -261,7 +261,7 @@ const ConnectorsApp = () => {
       name: 'Clarify / Rephrase',
       icon: '🔍',
       color: 'bg-purple-500',
-      connectors: [
+      expressions: [
         {
           word: 'in other words',
           usage: 'Use after saying something unclear or complex.',
@@ -368,7 +368,7 @@ const ConnectorsApp = () => {
       name: 'Organize ideas',
       icon: '🧭',
       color: 'bg-emerald-500',
-      connectors: [
+      expressions: [
         {
           word: 'first',
           usage: 'Use to introduce the first point.',
@@ -493,7 +493,7 @@ const ConnectorsApp = () => {
       name: 'Give an example',
       icon: '📝',
       color: 'bg-indigo-500',
-      connectors: [
+      expressions: [
         {
           word: 'for example',
           usage: 'Use to illustrate a point.',
@@ -591,7 +591,7 @@ const ConnectorsApp = () => {
       name: 'Emphasize',
       icon: '💡',
       color: 'bg-yellow-500',
-      connectors: [
+      expressions: [
         {
           word: 'in fact',
           usage: 'Use to strengthen or correct a statement.',
@@ -707,7 +707,7 @@ const ConnectorsApp = () => {
       name: 'Show opinion',
       icon: '💬',
       color: 'bg-orange-500',
-      connectors: [
+      expressions: [
         {
           word: 'I think',
           usage: 'Use to express your opinion softly.',
@@ -812,9 +812,9 @@ const ConnectorsApp = () => {
 
     be_careful: {
       name: 'Be careful / Polite',
-      icon: '🫶',
+      icon: '❤',
       color: 'bg-teal-500',
-      connectors: [
+      expressions: [
         {
           word: 'maybe',
           usage: 'Use to soften suggestions.',
@@ -930,7 +930,7 @@ const ConnectorsApp = () => {
       name: 'Conclude / Wrap up',
       icon: '🏁',
       color: 'bg-pink-500',
-      connectors: [
+      expressions: [
         {
           word: 'in conclusion',
           usage: 'Use in formal endings.',
@@ -1046,7 +1046,7 @@ const ConnectorsApp = () => {
       name: 'Buy time / Sound natural',
       icon: '⏳',
       color: 'bg-gray-500',
-      connectors: [
+      expressions: [
         {
           word: 'you know',
           usage: 'Use to keep speaking naturally.',
@@ -1159,9 +1159,9 @@ const ConnectorsApp = () => {
     }
   };
 
-  const categories = Object.keys(connectorsData).map(key => ({
+  const categories = Object.keys(expressionsData).map(key => ({
     id: key,
-    ...connectorsData[key]
+    ...expressionsData[key]
   }));
 
   const handleCategoryClick = (category) => {
@@ -1169,15 +1169,15 @@ const ConnectorsApp = () => {
     setCurrentView('list');
   };
 
-  const handleConnectorClick = (connector) => {
-    setSelectedConnector(connector);
+  const handleExpressionClick = (expression) => {
+    setSelectedExpression(expression);
     setCurrentView('detail');
   };
 
   const handleBack = () => {
     if (currentView === 'detail') {
       setCurrentView('list');
-      setSelectedConnector(null);
+      setSelectedExpression(null);
     } else if (currentView === 'list') {
       setCurrentView('categories');
       setSelectedCategory(null);
@@ -1202,7 +1202,7 @@ const ConnectorsApp = () => {
           </div>
           <div>
             <h2 className="text-lg font-semibold text-slate-800">{category.name}</h2>
-            <p className="text-sm text-slate-500">{category.connectors.length} connectors</p>
+            <p className="text-sm text-slate-500">{category.expressions.length} words</p>
           </div>
         </div>
         <ChevronRight className="w-5 h-5 text-slate-400" />
@@ -1210,7 +1210,7 @@ const ConnectorsApp = () => {
     </button>
   );
 
-  const ConnectorCard = ({ connector, isActive, onClick }) => (
+  const ExpressionCard = ({ expression, isActive, onClick }) => (
     <button
       onClick={onClick}
       className={`w-full rounded-lg shadow-sm hover:shadow-md transition-all p-4 text-left border active:scale-[0.98] ${
@@ -1221,15 +1221,15 @@ const ConnectorsApp = () => {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-slate-800 capitalize">{connector.word}</h3>
-          <p className="text-sm text-slate-500 mt-1 line-clamp-1">{connector.description}</p>
+          <h3 className="text-lg font-semibold text-slate-800 capitalize">{expression.word}</h3>
+          <p className="text-sm text-slate-500 mt-1 line-clamp-1">{expression.description}</p>
         </div>
         <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0 ml-2" />
       </div>
     </button>
   );
 
-  const DetailContent = ({ connector, category, showBackButton, onBack }) => (
+  const DetailContent = ({ expression, category, showBackButton, onBack }) => (
     <div className="min-h-screen lg:min-h-0 bg-gradient-to-br from-slate-50 to-slate-100 lg:bg-transparent">
       {showBackButton && (
         <div className="sticky top-0 bg-white shadow-sm z-10 px-4 py-4 border-b border-slate-200 lg:hidden">
@@ -1240,7 +1240,7 @@ const ConnectorsApp = () => {
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back to list</span>
           </button>
-          <h1 className="text-2xl font-bold text-slate-800 capitalize">{connector.word}</h1>
+          <h1 className="text-2xl font-bold text-slate-800 capitalize">{expression.word}</h1>
           <div className="flex items-center gap-2 mt-2">
             <div className={`${category.color} px-3 py-1 rounded-full text-white text-xs font-medium`}>
               {category.name}
@@ -1250,7 +1250,7 @@ const ConnectorsApp = () => {
       )}
 
       <div className="hidden lg:block mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 capitalize">{connector.word}</h1>
+        <h1 className="text-2xl font-bold text-slate-800 capitalize">{expression.word}</h1>
         <div className="flex items-center gap-2 mt-2">
           <div className={`${category.color} px-3 py-1 rounded-full text-white text-xs font-medium`}>
             {category.name}
@@ -1261,18 +1261,18 @@ const ConnectorsApp = () => {
       <div className="p-4 lg:p-0 space-y-4 pb-8">
         <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
           <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">How to Use</h2>
-          <p className="text-slate-700 leading-relaxed">{connector.usage}</p>
+          <p className="text-slate-700 leading-relaxed">{expression.usage}</p>
         </div>
 
         <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
           <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Description</h2>
-          <p className="text-slate-700 leading-relaxed">{connector.description}</p>
+          <p className="text-slate-700 leading-relaxed">{expression.description}</p>
         </div>
 
         <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
           <h2 className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-3">Examples</h2>
           <div className="space-y-3">
-            {connector.examples.map((example, index) => (
+            {expression.examples.map((example, index) => (
               <div key={index} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
                 <p className="text-slate-700 leading-relaxed italic">"{example}"</p>
               </div>
@@ -1290,9 +1290,9 @@ const ConnectorsApp = () => {
       <div className="sticky top-0 bg-white shadow-sm z-10 px-4 py-6 border-b border-slate-200">
         <div className="flex items-center gap-3 mb-2">
           <BookOpen className="w-8 h-8 text-blue-600" />
-          <h1 className="text-2xl font-bold text-slate-800">English Connectors</h1>
+          <h1 className="text-2xl font-bold text-slate-800">FindMyWord</h1>
         </div>
-        <p className="text-sm text-slate-600">Select a category to explore connectors</p>
+        <p className="text-sm text-slate-600">Select your intention and find your word</p>
       </div>
       <div className="p-4 space-y-3 pb-8">
         {categories.map((category) => (
@@ -1323,17 +1323,17 @@ const ConnectorsApp = () => {
           </div>
           <div>
             <h1 className="text-xl font-bold text-slate-800">{selectedCategory.name}</h1>
-            <p className="text-sm text-slate-600">{selectedCategory.connectors.length} connectors</p>
+            <p className="text-sm text-slate-600">{selectedCategory.expressions.length} words</p>
           </div>
         </div>
       </div>
       <div className="p-4 space-y-2 pb-8">
-        {selectedCategory.connectors.map((connector, index) => (
-          <ConnectorCard
+        {selectedCategory.expressions.map((expression, index) => (
+          <ExpressionCard
             key={index}
-            connector={connector}
+            expression={expression}
             isActive={false}
-            onClick={() => handleConnectorClick(connector)}
+            onClick={() => handleExpressionClick(expression)}
           />
         ))}
       </div>
@@ -1342,7 +1342,7 @@ const ConnectorsApp = () => {
 
   const MobileDetailView = () => (
     <DetailContent
-      connector={selectedConnector}
+      expression={selectedExpression}
       category={selectedCategory}
       showBackButton={true}
       onBack={handleBack}
@@ -1376,7 +1376,7 @@ const ConnectorsApp = () => {
                 isActive={selectedCategory?.id === category.id}
                 onClick={() => {
                   setSelectedCategory(category);
-                  setSelectedConnector(null);
+                  setSelectedExpression(null);
                   setCurrentView('list');
                 }}
               />
@@ -1394,17 +1394,17 @@ const ConnectorsApp = () => {
                 </div>
                 <div>
                   <h2 className="text-sm font-semibold text-slate-700">{selectedCategory.name}</h2>
-                  <p className="text-xs text-slate-400">{selectedCategory.connectors.length} connectors</p>
+                  <p className="text-xs text-slate-400">{selectedCategory.expressions.length} words</p>
                 </div>
               </div>
               <div className="space-y-2">
-                {selectedCategory.connectors.map((connector, index) => (
-                  <ConnectorCard
+                {selectedCategory.expressions.map((expression, index) => (
+                  <ExpressionCard
                     key={index}
-                    connector={connector}
-                    isActive={selectedConnector?.word === connector.word}
+                    expression={expression}
+                    isActive={selectedExpression?.word === expression.word}
                     onClick={() => {
-                      setSelectedConnector(connector);
+                      setSelectedExpression(expression);
                       setCurrentView('detail');
                     }}
                   />
@@ -1413,16 +1413,16 @@ const ConnectorsApp = () => {
             </>
           ) : (
             <div className="flex items-center justify-center h-full text-slate-400 text-sm">
-              <p>Pick a category to see connectors</p>
+              <p>« Pick an intention to see a word or expression</p>
             </div>
           )}
         </div>
 
         {/* Column 3: Detail */}
         <div className="flex-1 min-w-0 overflow-y-auto pr-2 custom-scrollbar bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          {selectedConnector ? (
+          {selectedExpression ? (
             <DetailContent
-              connector={selectedConnector}
+              expression={selectedExpression}
               category={selectedCategory}
               showBackButton={false}
               onBack={handleBack}
@@ -1430,7 +1430,7 @@ const ConnectorsApp = () => {
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-slate-400 text-sm gap-2">
               <BookOpen className="w-12 h-12 text-slate-300" />
-              <p>Select a connector to see details</p>
+              <p>« Select a word or expression to see details</p>
             </div>
           )}
         </div>
@@ -1455,4 +1455,4 @@ const ConnectorsApp = () => {
   );
 };
 
-export default ConnectorsApp;
+export default FindMyWordApp;
